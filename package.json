@@ -1,0 +1,20 @@
+{
+  "name": "react-ex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^0.20.0",
+    "json-parser": "^1.1.5",
+    "react": "^15.1.0",
+    "slack-client": "^2.0.6",
+    "string-similarity": "^1.1.0",
+    "sync-request": "^3.0.1",
+    "yql": "^1.0.2"
+  }
+}
