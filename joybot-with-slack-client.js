@@ -6,11 +6,9 @@ var MemoryDataStore = require('slack-client').MemoryDataStore;
 var Json = require('json-parser');
 var request = require('sync-request');
 
-// var Bot = require('slackbot');
-var searchAPI = require('./search');
+var config = require('./config.json');
 
-var channel_token = 'xoxp-49783624596-49790470720-50290736517-fac26ff43b';
-var access_token = 'xoxb-50284232437-13nG4XhznAdVGpUKKX5kuyOY';
+var access_token = config.bot.access_token;
 
 var web = new WebClient(access_token);
 var rtm = new RtmClient(access_token, {
@@ -122,7 +120,7 @@ var getCityWeather = function(city) {
 // 이미지 검색
 var getWeatherImage = function(key) {
     var url, result, info,
-     imageAPI = 'http://api.giphy.com/v1/gifs/search?q={{key}}&api_key=dc6zaTOxFJmzC&limit=1';
+     imageAPI = 'http://api.giphy.com/v1/gifs/search?q={{key}}&api_key=' + config.giphy;
 
     if (key === 'clear sky') {
       return 'https://media.giphy.com/media/KlI5X8lg0wINO/giphy.gif';
