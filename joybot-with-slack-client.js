@@ -83,7 +83,7 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
 // 해쉬태그 검색기능
 var searchBySearchkey = function(searchKey) {
   var res, info, result,
-  serachAPI = 'https://apis.daum.net/search/web?apikey=1e69ea7c4d19e4b2ba02b4b13a4a2db6&q={{serachkey}}&output=json&result=1',
+  serachAPI = 'https://apis.daum.net/search/web?apikey='+ config.daum +'&q={{serachkey}}&output=json&result=1',
   url = serachAPI.replace('{{serachkey}}', searchKey);
 
   res = request('GET', url);
@@ -106,7 +106,7 @@ var replyGreeting = function(msg, reply, userName) {
 // 오늘날씨 제공
 var getCityWeather = function(city) {
   var weatherRes, info,
-  weatherAPI = 'http://api.openweathermap.org/data/2.5/weather?q={{city}}&APPID=e2d645a4b4df9de5a97857040979a177';
+  weatherAPI = 'http://api.openweathermap.org/data/2.5/weather?q={{city}}&APPID=' + config.openWeather;
 
   url = weatherAPI.replace('{{city}}', 'Seoul');
 
