@@ -1,7 +1,7 @@
-var RtmClient = require('slack-client').RtmClient;
-var WebClient = require('slack-client').WebClient;
-var RTM_EVENTS = require('slack-client').RTM_EVENTS;
-var MemoryDataStore = require('slack-client').MemoryDataStore;
+var RtmClient = require('@slack/client').RtmClient;
+var WebClient = require('@slack/client').WebClient;
+var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
+var MemoryDataStore = require('@slack/client').MemoryDataStore;
 
 var Json = require('json-parser');
 var request = require('sync-request');
@@ -78,10 +78,9 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
       }
 
       if(text.startsWith('.이번주날씨')) {
-        var options, day, result = getCityWeather(false, "seoul").list,
-        date = new Date();
+        var options, calDay, now = new Date(), result = getCityWeather(false, "seongnam").list;
 
-        for(var i=0; i < result.length; i++) {
+        for(var i = result.length-1; i >= 0 ; i--) {
           options = {
             as_user: true,
             attachments: JSON.stringify([{
@@ -91,9 +90,9 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
               "footer": "#joybot"
           }])
           }
-          day = date.getDate() + 1 + i;
+          calDay = new Date(Date.parse(now) + (i + 1) * 1000 * 60 * 60 *24);
           web.chat.postMessage(channel,
-            date.getFullYear() + "년 " + date.getMonth() + "월 " + day + "일 " +" 서울의 날씨를 알려드립니다 ! :dolphin:", options);
+            calDay.getFullYear() + "년 " + (calDay.getMonth() + 1) + "월 " + calDay.getDate() + "일 " +" 판교의 날씨를 알려드립니다 ! :dolphin:", options);
         }
       }
 
@@ -143,7 +142,7 @@ var getCityWeather = function(current, city) {
   weatherRes = request('GET', url);
   info = JSON.parse(weatherRes.getBody('utf8'));
 
-  console.log(info);
+  //console.log(info);
   return info;
   //return info.list[0]
 }
