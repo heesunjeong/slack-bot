@@ -7,7 +7,6 @@ var Json = require('json-parser');
 var request = require('sync-request');
 
 var config = require('./config.json');
-
 var access_token = config.bot.access_token;
 
 var web = new WebClient(access_token);
@@ -39,6 +38,10 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
         replyGreeting(message, greeting, userInfo.name);
       }
 
+      /*
+      해시태그(#) 검색 기능
+      #{검색어}로 입력시 Daum API를 이용하여 검색결과 보여줌.
+      */
       if(text.startsWith('#')) {
         console.log(userInfo[0] + " search text : "+text.substring(1));
         if(!text.substring(1)) {
@@ -65,6 +68,11 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
         }
       }
 
+      /*
+      현재날씨 기능
+      .오늘날씨로 입력시 Open Weather API를 이용하여 현재 날씨정보와 날씨에 대한 giphy이미지를 보여줌.
+      현재 서울날씨만 제공. 추후에 도시로 검색 가능하도록 수정.
+      */
       if(text.startsWith('.오늘날씨')) {
         var result = getCityWeather(true, "seoul").weather[0],
         options = {
@@ -81,6 +89,11 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
         web.chat.postMessage(channel, "현재 서울의 날씨를 알려드립니다 ! :dolphin:", options);
       }
 
+      /*
+      앞으로 5일간날씨 기능
+      .이번주날씨로 입력시 Open Weather API를 이용하여 앞으로 5일간의 날씨 보여줌.
+      현재 서울날씨만 제공. 추후에 도시로 검색 가능하도록 수정.
+      */
       if(text.startsWith('.이번주날씨')) {
         var options, calDay, msg = "", now = new Date(), result = getCityWeather(false, "seongnam").list;
 
