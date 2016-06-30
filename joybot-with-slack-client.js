@@ -45,19 +45,23 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
           web.chat.postMessage(channel, "해쉬태그 검색은 #{검색어}로 사용할 수 있어요 ! :sunglasses:", {as_user: true});
         } else {
           var result = searchBySearchkey(encodeURI(text.substring(1)));
-          var options = {
-            as_user: true,
-            attachments: JSON.stringify([{
-              "author_name": result.url,
-              "author_link": result.url,
-              "title": markupToMarkdwn(result.title),
-              "title_link": result.link,
-              "text": markupToMarkdwn(result.description),
-              "footer": "#joybot",
-              "mkrdwn": true,
-            }])
+          if(result === "error") {
+            web.chat.postMessage(channel, ":no_good: 다른 검색어로 검색해주세요 :no_good:", {as_user: true});
+          } else {
+            var options = {
+              as_user: true,
+              attachments: JSON.stringify([{
+                "author_name": result.url,
+                "author_link": result.url,
+                "title": markupToMarkdwn(result.title),
+                "title_link": result.link,
+                "text": markupToMarkdwn(result.description),
+                "footer": "#joybot",
+                "mkrdwn": true,
+              }])
+            }
+            web.chat.postMessage(channel, "Searching for `" + text.substring(1) + "`...:mag:", options);
           }
-          web.chat.postMessage(channel, "Searching for `" + text.substring(1) + "`...:mag:", options);
         }
       }
 
@@ -110,6 +114,9 @@ var searchBySearchkey = function(searchKey) {
   url = serachAPI.replace('{{serachkey}}', searchKey);
 
   res = request('GET', url);
+  if (res.statusCode >= 300) {
+    return "error";
+  }
   info = JSON.parse(res.getBody('utf8'));
   console.log(info.channel.item);
 
