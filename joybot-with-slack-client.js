@@ -78,22 +78,21 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
       }
 
       if(text.startsWith('.이번주날씨')) {
-        var options, calDay, now = new Date(), result = getCityWeather(false, "seongnam").list;
+        var options, calDay, msg = "", now = new Date(), result = getCityWeather(false, "seongnam").list;
 
-        for(var i = result.length-1; i >= 0 ; i--) {
-          options = {
-            as_user: true,
-            attachments: JSON.stringify([{
-              "author_name": "Today Seoul's Weather",
-              "title": result[i].weather[0].main,
-              "text": result[i].weather[0].description,
-              "footer": "#joybot"
-          }])
-          }
+        for(var i = 0 ; i <result.length-1 ; i++) {
           calDay = new Date(Date.parse(now) + (i + 1) * 1000 * 60 * 60 *24);
-          web.chat.postMessage(channel,
-            calDay.getFullYear() + "년 " + (calDay.getMonth() + 1) + "월 " + calDay.getDate() + "일 " +" 판교의 날씨를 알려드립니다 ! :dolphin:", options);
+          msg += "\n" + (calDay.getMonth() + 1) + "월 " + calDay.getDate() + "일 : *" + result[i].weather[0].description +"*";
+
+          if((result[i].weather[0].main).includes("Rain")) {
+            msg += " :rain_cloud:";
+          } else if ((result[i].weather[0].main).includes("Celar")) {
+            msg += " :comet:";
+          } else if ((result[i].weather[0].main).includes("Clouds")) {
+            msg += " :cloud:";
+          }
         }
+        web.chat.postMessage(channel, "이번주 판교의 날씨를 알려드립니다 ! :dolphin:\n " + msg, {as_user: true});
       }
 
       if(text.startsWith('.기억해')) {
@@ -142,9 +141,7 @@ var getCityWeather = function(current, city) {
   weatherRes = request('GET', url);
   info = JSON.parse(weatherRes.getBody('utf8'));
 
-  //console.log(info);
   return info;
-  //return info.list[0]
 }
 
 // 이미지 검색
