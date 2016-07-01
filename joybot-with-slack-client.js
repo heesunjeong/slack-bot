@@ -7,10 +7,10 @@ var Json = require('json-parser');
 var request = require('sync-request');
 
 var config = require('./config.json');
-var access_token = config.bot.access_token;
+var ACCESS_TOKEN = config.bot.access_token;
 
-var web = new WebClient(access_token);
-var rtm = new RtmClient(access_token, {
+var web = new WebClient(ACCESS_TOKEN);
+var rtm = new RtmClient(ACCESS_TOKEN, {
     logLevel: 'error',
     dataStore: new MemoryDataStore(),
     autoReconnect: true,
@@ -26,7 +26,6 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
         greeting = [];
 
     if (text != null || text == '') {
-
         if (text == 'hello') {
             greeting = ["Hi " + userInfo.name + " ! :hugging_face:",
                 userInfo.name + " ! How are you? :blush:"];
@@ -44,7 +43,7 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
          #{검색어}로 입력시 Daum API를 이용하여 검색결과 보여줌.
          */
         if (text.startsWith('#')) {
-            console.log(userInfo[0] + " search text : " + text.substring(1));
+            console.log(userInfo.name + " search text : " + text.substring(1));
             if (!text.substring(1)) {
                 web.chat.postMessage(channel, ":seedling: *Joybot Help Desk* :seedling:\n>>>해쉬태그 검색은 #{검색어}로 사용할 수 있어요 ! :sunglasses:", {as_user: true});
             } else {
@@ -89,6 +88,8 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
                     }])
                 }
 
+                console.log(userInfo.name + " search today weather");
+
             web.chat.postMessage(channel, "현재 판교의 날씨를 알려드립니다 ! :dolphin:", options);
         }
 
@@ -110,9 +111,10 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
                 } else if ((result[i].weather[0].main).includes("Clouds")) {
                     msg += ":cloud:";
                 }
-                msg += " *" + result[i].weather[0].description + "* _(최고: " + result[i].temp.max + "°C , 최저: " + result[i].temp.min + "°C)_\n";
-            }
-            ;
+                msg += " *" + result[i].weather[0].description + "* _(최고: " + result[i].temp.max + "°C, 최저: " + result[i].temp.min + "°C)_\n";
+            };
+
+            console.log(userInfo.name + " search weekly weather");
 
             web.chat.postMessage(channel, "이번주 판교의 날씨를 알려드립니다 ! :dolphin:\n\n", {
                 as_user: true,
@@ -141,22 +143,15 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
                         "name": "no",
                         "text": "불참 :no_good:",
                         "type": "button",
-                        "value": "no"
-                    },
-                        /*{
-                         "name": "war",
-                         "text": "Thermonuclear War",
-                         "style": "danger",
-                         "type": "button",
-                         "value": "war",
-                         "confirm": {
-                         "title": "Are you sure?",
-                         "text": "Wouldn't you prefer a good game of chess?",
-                         "ok_text": "Yes",
-                         "dismiss_text": "No"
-                         }
-                         }*/
-                    ],
+                        "value": "no",
+                        "style": "danger",
+                        "confirm": {
+                          "title": "Are you sure?",
+                          "text": "같이 가요..... 티타임.................",
+                          "ok_text": "Yes",
+                          "dismiss_text": "No"
+                        }
+                    }],
                     "footer": "#joybot",
                     "color": "#ffad33",
                     "mrkdwn_in": ["text"]
@@ -165,11 +160,33 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
         }
 
         if (text.startsWith('.?')) {
+          console.log(userInfo.name + " comes help desk");
             web.chat.postMessage(channel, ":seedling: *Joybot Help Desk* :seedling:\n>>>"
                 + "`#{검색어}` : 해시태그 검색. 검색어로 검색한 검색결과를 보여줍니다.\n"
                 + "`.오늘날씨` : 현재 판교날씨를 이미지와 함께 알려드려요.\n"
                 + "`.이번주날씨` : 오늘 이후 5일동안의 날씨를 알려드려요.\n"
-                + "`.티타임` : 티타임 참석 인원을 모집합니다.", {as_user: true});
+                + "`.티타임` : 티타임 참석 인원을 모집합니다.(구현중)\n"
+                + "`.계산 {수식}` : 수식을 계산해드립니다.(잘못된 수식은 봇이 죽어요..)", {as_user: true});
+        }
+
+        if (text.startsWith('.짤등록')) {
+            /* 이미지 첨부시
+               <@U1FP8DUM6|joy> uploaded a file: <https://dktechin.slack.com/files/joy/F1N18NW1W/2343.png|{title}> and commented: {comment}
+               형식으로 들어옴
+          */
+        }
+
+        if (text.startsWith('.계산')) {
+            var formula = text.split(" ");
+            if(formula.length == 2) {
+              if(!eval(formula[1])) {
+                web.chat.postMessage(channel, ":police_car: *Warning ! ! !* :police_car:\n>>>:no_good::no_good::no_good::no_good::no_good::no_good:\n잘못 된 수식 입니다. 다른 수식으로 검색해주세요.", {as_user: true});
+              } else {
+                web.chat.postMessage(channel, ">>>" + formula[1] + " = *" + eval(formula[1]) + "*", {as_user: true});
+              }
+            } else {
+              web.chat.postMessage(channel, ":seedling: *Joybot Help Desk* :seedling:\n>>>계산기는 .계산 {수식}으로 사용할 수 있어요 ! :sunglasses:", {as_user: true});
+            }
         }
 
         if (text.startsWith('.기억해')) {
@@ -192,8 +209,6 @@ var searchBySearchkey = function (searchKey) {
         return "error";
     }
     info = JSON.parse(res.getBody('utf8'));
-    console.log(info.channel.item);
-
     return info.channel.item[0];
 }
 
