@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node joybot-with-slack-client.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -12,8 +13,6 @@
     "@slack/client": "^3.5.0",
     "cheerio": "^0.20.0",
     "json-parser": "^1.1.5",
-    "react": "^15.1.0",
-    "slack-client": "^2.0.6",
     "string-similarity": "^1.1.0",
     "sync-request": "^3.0.1",
     "yql": "^1.0.2"

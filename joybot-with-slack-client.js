@@ -138,7 +138,8 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
                         "name": "ok",
                         "text": "참석 :ok_woman:",
                         "type": "button",
-                        "value": "ok"
+                        "value": "ok",
+                        "style": "primary"
                     }, {
                         "name": "no",
                         "text": "불참 :no_good:",
@@ -147,11 +148,12 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
                         "style": "danger",
                         "confirm": {
                           "title": "Are you sure?",
-                          "text": "같이 가요..... 티타임.................",
+                          "text": userInfo.name + "... 같이 가요..... 티타임.................",
                           "ok_text": "Yes",
                           "dismiss_text": "No"
                         }
                     }],
+                    "callback_id": "joybottest",
                     "footer": "#joybot",
                     "color": "#ffad33",
                     "mrkdwn_in": ["text"]
@@ -171,13 +173,14 @@ rtm.on(RTM_EVENTS.MESSAGE, function (message) {
 
         if (text.startsWith('.짤등록')) {
             /* 이미지 첨부시
-               <@U1FP8DUM6|joy> uploaded a file: <https://dktechin.slack.com/files/joy/F1N18NW1W/2343.png|{title}> and commented: {comment}
+               <@{userkey}|{username}> uploaded a file: <{imageURI}}|{title}> and commented: {comment}
                형식으로 들어옴
           */
         }
 
         if (text.startsWith('.계산')) {
             var formula = text.split(" ");
+            console.log(userInfo.name + " used calculator : " + formula[1])
             if(formula.length == 2) {
               if(!eval(formula[1])) {
                 web.chat.postMessage(channel, ":police_car: *Warning ! ! !* :police_car:\n>>>:no_good::no_good::no_good::no_good::no_good::no_good:\n잘못 된 수식 입니다. 다른 수식으로 검색해주세요.", {as_user: true});
