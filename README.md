@@ -85,6 +85,7 @@ $ docker run -it --rm -p 8080:8888 {projectName}:{version}
 ```
 
 
-출처: http://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html#install_docker
+참고자료
+http://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html#install_docker
 https://github.com/docker/docker/issues/17645
 https://nodejs.org/en/docs/guides/nodejs-docker-webapp/
